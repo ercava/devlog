@@ -11,10 +11,7 @@
 </head>
 <body>
 
-    <header>
-        <h1>devlog</h1>
-        <div class="subtitle">backlog of ercava development program progress.</div>
-    </header>
+
 
     <div class="controls-bar">
         <input type="text" id="searchBar" class="search-box" placeholder="search comments or projects...">
@@ -28,11 +25,23 @@
         </div>
     </div>
 
-    <main class="timeline" id="timelineContainer">
-        </main>
+<div class="timeline-view-wrapper">
+        <div class="controls-bar">
+            <input type="text" id="searchBar" class="search-box" placeholder="search comments or projects...">
+            
+            <div class="filter-group">
+                <select id="projectFilter">
+                    </select>
 
-    <div class="nav-links">
-        <a href="s/quickuploadrant.html">→ go to quickuploadrant</a>
+                <button class="btn-toggle active" id="sortNewest" onclick="setSort('newest')">newest</button>
+                <button class="btn-toggle" id="sortOldest" onclick="setSort('oldest')">oldest</button>
+            </div>
+        </div>
+
+        <main class="timeline" id="timelineContainer">
+            </main>
+
+
     </div>
 
     <script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERCAVA Development Program</title>
+    <title>ercava development program</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,23 +12,19 @@
 <body>
 
     <header>
-        <h1>Ercava Development Program</h1>
-        <div class="subtitle">Minimalist system development log tracking.</div>
+        <h1>ercava development program</h1>
+        <div class="subtitle">minimalist system development log tracking.</div>
     </header>
 
     <div class="controls-bar">
-        <input type="text" id="searchBar" class="search-box" placeholder="Search comments or projects...">
+        <input type="text" id="searchBar" class="search-box" placeholder="search comments or projects...">
         
         <div class="filter-group">
             <select id="projectFilter">
-                <option value="all">All Projects</option>
-                <option value="Project Darkbox">Project Darkbox</option>
-                <option value="Project Recalibre">Project Recalibre</option>
-                <option value="Sonic Linguistic">Sonic Linguistic</option>
-            </select>
+                </select>
 
-            <button class="btn-toggle active" id="sortNewest" onclick="setSort('newest')">Newest</button>
-            <button class="btn-toggle" id="sortOldest" onclick="setSort('oldest')">Oldest</button>
+            <button class="btn-toggle active" id="sortNewest" onclick="setSort('newest')">newest</button>
+            <button class="btn-toggle" id="sortOldest" onclick="setSort('oldest')">oldest</button>
         </div>
     </div>
 
@@ -36,7 +32,7 @@
         </main>
 
     <div class="nav-links">
-        <a href="quickuploadrant.html">→ Go to quickuploadrant</a>
+        <a href="s/quickuploadrant.html">→ go to quickuploadrant</a>
     </div>
 
     <script>
@@ -47,10 +43,25 @@
             try {
                 const response = await fetch('logs.json?t=' + new Date().getTime());
                 logData = await response.json();
+                
+                populateProjectFilter();
                 renderTimeline();
             } catch (err) {
-                console.error("Error connecting to data layer:", err);
+                console.error("error connecting to data layer:", err);
             }
+        }
+
+        // extract and construct unique dynamic categories directly from data layer
+        function populateProjectFilter() {
+            const filterSelect = document.getElementById('projectFilter');
+            
+            // extract distinct project string occurrences safely
+            const projects = [...new Set(logData.map(item => item.project).filter(Boolean))];
+            
+            let optionsHTML = `<option value="all">all projects</option>`;
+            optionsHTML += projects.map(proj => `<option value="${proj}">${proj}</option>`).join('');
+            
+            filterSelect.innerHTML = optionsHTML;
         }
 
         function renderTimeline() {
@@ -58,9 +69,10 @@
             const projectFilter = document.getElementById('projectFilter').value;
             const container = document.getElementById('timelineContainer');
             
-            // Search criteria checks project context and raw comments only
             let filtered = logData.filter(item => {
-                const matchesSearch = item.comment.toLowerCase().includes(searchQuery) || item.project.toLowerCase().includes(searchQuery);
+                const commentText = (item.comment || "").toLowerCase();
+                const projectText = (item.project || "").toLowerCase();
+                const matchesSearch = commentText.includes(searchQuery) || projectText.includes(searchQuery);
                 const matchesProject = projectFilter === 'all' || item.project === projectFilter;
                 return matchesSearch && matchesProject;
             });
@@ -81,8 +93,8 @@
                     <div class="log-comment">${item.comment}</div>
                     
                     ${item.imageUrl ? `
-                        <div style="margin-top: 14px; max-width: 500px;">
-                            <img src="${item.imageUrl}" style="width: 100%; border-radius: 4px; display: block;" alt="Uploaded Resource Block">
+                        <div style="margin-top: 14px; max-width: 500px; width: 100%;">
+                            <img src="${item.imageUrl}" style="width: 100%; border-radius: 4px; display: block; margin: 0 auto;" alt="uploaded resource block">
                         </div>
                     ` : ''}
                 </div>

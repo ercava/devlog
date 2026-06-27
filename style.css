@@ -1,0 +1,236 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #000;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    padding: 40px 8vw;
+    -webkit-font-smoothing: antialiased;
+}
+
+header {
+    margin-bottom: 40px;
+    max-width: 800px;
+}
+
+h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Control Controls Grid */
+.controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 800px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #111;
+}
+
+.search-box {
+    background: #111;
+    border: 1px solid #222;
+    padding: 10px 16px;
+    border-radius: 4px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.9rem;
+    width: 100%;
+    max-width: 300px;
+    transition: border 0.2s;
+}
+
+.search-box:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+
+.filter-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+select, .btn-toggle {
+    background: #111;
+    border: 1px solid #222;
+    color: #94a3b8;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+select:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+
+.btn-toggle.active {
+    background: #38bdf8;
+    color: #0f172a;
+    border-color: #38bdf8;
+    font-weight: 600;
+}
+
+/* Timeline Layout */
+.timeline {
+    max-width: 800px;
+    position: relative;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 35px;
+    border-left: 1px solid #222;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 6px;
+    width: 7px;
+    height: 7px;
+    background: #334155;
+    border-radius: 50%;
+}
+
+.timeline-item.featured::before {
+    background: #38bdf8;
+    box-shadow: 0 0 8px #38bdf8;
+}
+
+.meta-line {
+    display: flex;
+    gap: 12px;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 6px;
+    align-items: center;
+}
+
+.project-badge {
+    background: #111;
+    color: #38bdf8;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.log-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.log-comment {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Form Styles for Quick Upload Rant */
+.form-container {
+    max-width: 500px;
+    background: #111;
+    padding: 30px;
+    border-radius: 6px;
+    border: 1px solid #1a1a1a;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.form-group input[type="text"], .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    border: 1px solid #222;
+    border-radius: 4px;
+    color: white;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+
+.file-dropzone {
+    border: 2px dashed #222;
+    padding: 30px;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #050505;
+    transition: border 0.2s;
+}
+
+.file-dropzone:hover {
+    border-color: #38bdf8;
+}
+
+.btn-submit {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 12px 24px;
+    font-family: inherit;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background: #38bdf8;
+}
+
+.nav-links {
+    margin-top: 40px;
+    font-size: 0.85rem;
+}
+
+.nav-links a {
+    color: #38bdf8;
+    text-decoration: none;
+}

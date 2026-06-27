@@ -1,4 +1,47 @@
-* {
+/* Center-aligned Timeline Component Container with a middle tracking axis line */
+.timeline {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    padding: 20px 0;
+}
+
+/* The vertical axis timeline line running down the exact center */
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: #222;
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    width: 100%;
+    padding-bottom: 45px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1; /* Renders above the timeline track line base */
+}
+
+/* Centered node points resting on top of the vertical axis timeline tracking line */
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    background: #38bdf8;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #38bdf8;
+    transform: translateX(-50%);
+}* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;

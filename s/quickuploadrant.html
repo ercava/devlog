@@ -6,97 +6,126 @@
     <title>quip</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles.css">
-    <style>
-        /* Form specific structural scope styling updates */
-        .form-wrapper {
-            width: 100%;
-            max-width: 500px;
-            margin-top: 20px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 24px;
-            text-align: left;
-            width: 100%;
-        }
-        .form-group label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #64748b;
-            letter-spacing: 0.5px;
-        }
-        .form-group input[type="text"], 
-        .form-group textarea {
-            width: 100%;
-            padding: 14px;
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 4px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: border-color 0.2s;
-        }
-        .form-group input[type="text"]:focus, 
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #38bdf8;
-        }
-        .dropzone-box {
-            border: 1px dashed #333;
-            background: #0a0a0a;
-            border-radius: 4px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .dropzone-box:hover, .dropzone-box.dragover {
-            border-color: #38bdf8;
-            background: #111;
-        }
-        .dropzone-box span {
-            font-size: 0.85rem;
-            color: #94a3b8;
-        }
-        #previewContainer {
-            margin-top: 12px;
-            display: none;
-            width: 100%;
-            border-radius: 4px;
-            overflow: hidden;
-            border: 1px solid #222;
-        }
-        #previewImg {
-            width: 100%;
-            display: block;
-            height: auto;
-        }
-        .btn-submit {
-            width: 100%;
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 14px;
-            font-family: inherit;
-            font-weight: 700;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        .btn-submit:hover {
-            background: #38bdf8;
-            color: #000;
-        }
-        .btn-submit:disabled {
-            background: #222;
-            color: #555;
-            cursor: not-allowed;
-        }
-    </style>
+   <style>
+    /* Centering and spacing wrapper */
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 40px 20px;
+        background: #050505;
+    }
+
+    .form-wrapper {
+        width: 100%;
+        max-width: 500px;
+        background: #0a0a0a;
+        padding: 40px;
+        border: 1px solid #1e293b;
+        border-radius: 12px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 32px;
+        text-align: left;
+        width: 100%;
+    }
+
+    .form-group label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .form-group input[type="text"], 
+    .form-group textarea {
+        width: 100%;
+        padding: 16px;
+        background: #0f172a;
+        border: 1px solid #1e293b;
+        border-radius: 8px;
+        color: #f8fafc;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-group input[type="text"]:focus, 
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+        background: #1e293b;
+    }
+
+    .dropzone-box {
+        border: 2px dashed #1e293b;
+        background: #0f172a;
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .dropzone-box:hover, .dropzone-box.dragover {
+        border-color: #2563eb;
+        background: #1e293b;
+    }
+
+    .dropzone-box span {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    #previewContainer {
+        margin-top: 16px;
+        display: none;
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #1e293b;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 16px;
+        font-family: inherit;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+        background: #1d4ed8;
+    }
+
+    .nav-links {
+        margin-top: 30px;
+        font-size: 0.85rem;
+    }
+
+    .nav-links a {
+        color: #475569;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+        color: #2563eb;
+    }
+</style>
 </head>
 <body>
 
@@ -136,7 +165,7 @@
         const IMGBB_API_KEY = "46762a5e6eda82914445ffc478d66ca5";
         const GITHUB_PAT = "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";
         const REPO_OWNER = "ercava";
-        const REPO_NAME = "your-repo-name-here";
+        const REPO_NAME = "devlog";
 
         let targetImageFile = null;
 

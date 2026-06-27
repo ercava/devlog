@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERCAVA Development Program</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Ercava Development Program</h1>
+        <div class="subtitle">Minimalist system event sequence timeline & log tracking.</div>
+    </header>
+
+    <div class="controls-bar">
+        <input type="text" id="searchBar" class="search-box" placeholder="Search entries...">
+        
+        <div class="filter-group">
+            <select id="projectFilter">
+                <option value="all">All Projects</option>
+                <option value="Project Darkbox">Project Darkbox</option>
+                <option value="Project Recalibre">Project Recalibre</option>
+                <option value="Sonic Linguistic">Sonic Linguistic</option>
+            </select>
+
+            <button class="btn-toggle active" id="sortNewest" onclick="setSort('newest')">Newest</button>
+            <button class="btn-toggle" id="sortOldest" onclick="setSort('oldest')">Oldest</button>
+        </div>
+    </div>
+
+    <main class="timeline" id="timelineContainer">
+        <!-- Rendered by JavaScript dynamically -->
+    </main>
+
+    <div class="nav-links">
+        <a href="quickuploadrant.html">→ Go to quickuploadrant</a>
+    </div>
+
+    <script>
+        // Mock data log index matches
+        const logData = [
+            { id: 1, date: "2026-06-15", project: "Project Darkbox", title: "Automated File Parsing Complete", comment: "Optimized script pipelines to process text format rules without altering template guidelines.", featured: true },
+            { id: 2, date: "2026-05-20", project: "Project Recalibre", title: "Regex Transition Verified", comment: "Swapped dynamic spacing values layout definitions to strict explicit keywords to fix scaling issues.", featured: false },
+            { id: 3, date: "2026-04-10", project: "Sonic Linguistic", title: "National Level Asset Compilation", comment: "Archived asset records for presentation parameters cleanly into primary cloud directories.", featured: false }
+        ];
+
+        let currentSort = 'newest';
+
+        function renderTimeline() {
+            const searchQuery = document.getElementById('searchBar').value.toLowerCase();
+            const projectFilter = document.getElementById('projectFilter').value;
+            const container = document.getElementById('timelineContainer');
+            
+            let filtered = logData.filter(item => {
+                const matchesSearch = item.title.toLowerCase().includes(searchQuery) || item.comment.toLowerCase().includes(searchQuery);
+                const matchesProject = projectFilter === 'all' || item.project === projectFilter;
+                return matchesSearch && matchesProject;
+            });
+
+            if (currentSort === 'newest') {
+                filtered.sort((a, b) => b.id - a.id);
+            } else {
+                filtered.sort((a, b) => a.id - b.id);
+            }
+
+            container.innerHTML = filtered.map(item => `
+                <div class="timeline-item ${item.featured ? 'featured' : ''}">
+                    <div class="meta-line">
+                        <span>${item.date}</span>
+                        <span class="project-badge">${item.project}</span>
+                    </div>
+                    <div class="log-title">${item.title}</div>
+                    <div class="log-comment">${item.comment}</div>
+                </div>
+            `).join('');
+        }
+
+        function setSort(mode) {
+            currentSort = mode;
+            document.getElementById('sortNewest').classList.toggle('active', mode === 'newest');
+            document.getElementById('sortOldest').classList.toggle('active', mode === 'oldest');
+            renderTimeline();
+        }
+
+        document.getElementById('searchBar').addEventListener('input', renderTimeline);
+        document.getElementById('projectFilter').addEventListener('change', renderTimeline);
+
+        // Initial paint execution
+        renderTimeline();
+    </script>
+</body>
+</html>

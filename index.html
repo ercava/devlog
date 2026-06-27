@@ -11,21 +11,7 @@
 </head>
 <body>
 
-
-
-    <div class="controls-bar">
-        <input type="text" id="searchBar" class="search-box" placeholder="search comments or projects...">
-        
-        <div class="filter-group">
-            <select id="projectFilter">
-                </select>
-
-            <button class="btn-toggle active" id="sortNewest" onclick="setSort('newest')">newest</button>
-            <button class="btn-toggle" id="sortOldest" onclick="setSort('oldest')">oldest</button>
-        </div>
-    </div>
-
-<div class="timeline-view-wrapper">
+    <div class="timeline-view-wrapper">
         <div class="controls-bar">
             <input type="text" id="searchBar" class="search-box" placeholder="search comments or projects...">
             
@@ -60,11 +46,11 @@
             }
         }
 
-        // extract and construct unique dynamic categories directly from data layer
+        // Extract and construct unique dynamic categories directly from data layer
         function populateProjectFilter() {
             const filterSelect = document.getElementById('projectFilter');
             
-            // extract distinct project string occurrences safely
+            // Extract distinct project string occurrences safely
             const projects = [...new Set(logData.map(item => item.project).filter(Boolean))];
             
             let optionsHTML = `<option value="all">all projects</option>`;

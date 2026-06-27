@@ -1,27 +1,82 @@
 /* ==========================================
-   timeline component extensions
+   Centered Timeline Extensions & Color Scheme
    ========================================== */
 
-/* force lowercase rule exclusively on specific operational headings */
-h1, .subtitle, .form-group label, .btn-submit, .panel-header h3, .panel-tab {
+/* Target UI controls exclusively for lowercase styling */
+.timeline-view-wrapper .controls-bar,
+.timeline-view-wrapper .btn-toggle,
+.timeline-view-wrapper select,
+.timeline-view-wrapper .search-box::placeholder,
+.timeline-view-wrapper .project-badge {
     text-transform: lowercase;
 }
 
-/* center timeline wrapper element context */
+/* Base Wrapper to center the entire timeline system on the index page */
 .timeline-view-wrapper {
     width: 100%;
+    max-width: 600px;
+    margin: 60px auto 20px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 40px auto;
 }
 
-/* fixed centered vertical tracking line axis track */
+/* Control Bar styling matches your image reference */
+.timeline-view-wrapper .controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #1e293b;
+}
+
+.timeline-view-wrapper .search-box {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    padding: 10px 16px;
+    border-radius: 6px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.9rem;
+    flex: 1;
+    min-width: 200px;
+}
+
+.timeline-view-wrapper .filter-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.timeline-view-wrapper select, 
+.timeline-view-wrapper .btn-toggle {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    color: #94a3b8;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Deep Blue Theme Palette Updates */
+.timeline-view-wrapper .btn-toggle.active {
+    background: #1d4ed8; /* Darker Slate Blue */
+    color: #fff;
+    border-color: #2563eb;
+}
+
+/* Continuous Centered Line Track Solution */
 .timeline {
     width: 100%;
-    max-width: 600px;
     position: relative;
-    padding: 20px 0;
+    padding: 10px 0;
 }
 
 .timeline::before {
@@ -30,136 +85,84 @@ h1, .subtitle, .form-group label, .btn-submit, .panel-header h3, .panel-tab {
     top: 0;
     bottom: 0;
     left: 50%;
-    width: 1px;
-    background: #111e2e; /* dark structural line accent */
+    width: 2px;
+    background: #1e293b; /* Clean track divider line */
     transform: translateX(-50%);
 }
 
-/* timeline text block spacing and centering metrics */
+/* Individual Centered Timeline Node blocks */
 .timeline-item {
     position: relative;
     width: 100%;
-    padding-bottom: 45px;
-    text-align: center;
+    padding-bottom: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
     z-index: 1;
 }
 
-/* node point centered cleanly over vertical tracking axis line */
+/* Darker blue indicator dot resting precisely over the line axis */
 .timeline-item::before {
     content: '';
     position: absolute;
-    top: 4px;
+    top: 6px;
     left: 50%;
-    width: 8px;
-    height: 8px;
-    background: #1d4ed8; /* darker blue scheme node */
+    width: 10px;
+    height: 10px;
+    background: #2563eb; /* Matching deep blue scheme */
     border-radius: 50%;
-    box-shadow: 0 0 10px #1d4ed8;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
     transform: translateX(-50%);
 }
 
+/* Subtle separator between consecutive log items */
 .timeline-item::after {
     content: '';
     position: absolute;
     bottom: 15px;
-    width: 30px;
+    width: 24px;
     height: 1px;
-    background: #111e2e;
+    background: #1e293b;
 }
 
-.meta-line {
+.timeline-view-wrapper .meta-line {
     display: flex;
-    gap: 12px;
-    font-size: 0.8rem;
-    color: #475569;
-    margin-bottom: 10px;
     align-items: center;
     justify-content: center;
-}
-
-.project-badge {
-    background: #0f172a;
-    color: #2563eb; /* deep blue color mapping */
-    padding: 2px 10px;
-    border-radius: 3px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-/* normal case content mapping */
-.log-comment {
-    color: #94a3b8;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    max-width: 500px;
-    text-transform: none; /* overrides global lowercase forcing values */
-}
-
-/* controls alignment */
-.controls-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #111e2e;
-}
-
-.search-box {
-    background: #0f172a;
-    border: 1px solid #1e293b;
-    padding: 10px 16px;
-    border-radius: 4px;
-    color: #fff;
-    font-family: inherit;
-    font-size: 0.9rem;
-    flex: 1;
-    min-width: 200px;
-}
-
-.search-box:focus {
-    outline: none;
-    border-color: #2563eb;
-}
-
-.filter-group {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-select, .btn-toggle {
-    background: #0f172a;
-    border: 1px solid #1e293b;
+    gap: 10px;
+    font-size: 0.85rem;
     color: #64748b;
-    padding: 8px 14px;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    cursor: pointer;
-}
-
-.btn-toggle.active {
-    background: #1d4ed8;
-    color: #fff;
-    border-color: #1d4ed8;
-}
-
-.nav-links {
-    margin-top: 30px;
-    font-size: 0.85rem;
-    text-align: center;
+    margin-bottom: 12px;
     width: 100%;
 }
 
-.nav-links a {
-    color: #2563eb;
+.timeline-view-wrapper .project-badge {
+    background: #0f172a;
+    color: #3b82f6;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    border: 1px solid #1e293b;
+}
+
+/* Keeps comments and logs rendering in normal, unaltered sentence casing */
+.timeline-view-wrapper .log-comment {
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 85%;
+    text-transform: none; /* Disables absolute uppercase or lowercase overrides */
+}
+
+.timeline-view-wrapper .nav-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.timeline-view-wrapper .nav-links a {
+    color: #3b82f6;
     text-decoration: none;
+    font-size: 0.85rem;
 }

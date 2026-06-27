@@ -13,11 +13,11 @@
 
     <header>
         <h1>Ercava Development Program</h1>
-        <div class="subtitle">Minimalist system event sequence timeline & log tracking.</div>
+        <div class="subtitle">Minimalist system development log tracking.</div>
     </header>
 
     <div class="controls-bar">
-        <input type="text" id="searchBar" class="search-box" placeholder="Search entries...">
+        <input type="text" id="searchBar" class="search-box" placeholder="Search comments or projects...">
         
         <div class="filter-group">
             <select id="projectFilter">
@@ -33,30 +33,34 @@
     </div>
 
     <main class="timeline" id="timelineContainer">
-        <!-- Rendered by JavaScript dynamically -->
-    </main>
+        </main>
 
     <div class="nav-links">
         <a href="quickuploadrant.html">→ Go to quickuploadrant</a>
     </div>
 
     <script>
-        // Mock data log index matches
-        const logData = [
-            { id: 1, date: "2026-06-15", project: "Project Darkbox", title: "Automated File Parsing Complete", comment: "Optimized script pipelines to process text format rules without altering template guidelines.", featured: true },
-            { id: 2, date: "2026-05-20", project: "Project Recalibre", title: "Regex Transition Verified", comment: "Swapped dynamic spacing values layout definitions to strict explicit keywords to fix scaling issues.", featured: false },
-            { id: 3, date: "2026-04-10", project: "Sonic Linguistic", title: "National Level Asset Compilation", comment: "Archived asset records for presentation parameters cleanly into primary cloud directories.", featured: false }
-        ];
-
+        let logData = [];
         let currentSort = 'newest';
+
+        async function loadDatabase() {
+            try {
+                const response = await fetch('logs.json?t=' + new Date().getTime());
+                logData = await response.json();
+                renderTimeline();
+            } catch (err) {
+                console.error("Error connecting to data layer:", err);
+            }
+        }
 
         function renderTimeline() {
             const searchQuery = document.getElementById('searchBar').value.toLowerCase();
             const projectFilter = document.getElementById('projectFilter').value;
             const container = document.getElementById('timelineContainer');
             
+            // Search criteria checks project context and raw comments only
             let filtered = logData.filter(item => {
-                const matchesSearch = item.title.toLowerCase().includes(searchQuery) || item.comment.toLowerCase().includes(searchQuery);
+                const matchesSearch = item.comment.toLowerCase().includes(searchQuery) || item.project.toLowerCase().includes(searchQuery);
                 const matchesProject = projectFilter === 'all' || item.project === projectFilter;
                 return matchesSearch && matchesProject;
             });
@@ -68,13 +72,19 @@
             }
 
             container.innerHTML = filtered.map(item => `
-                <div class="timeline-item ${item.featured ? 'featured' : ''}">
+                <div class="timeline-item">
                     <div class="meta-line">
                         <span>${item.date}</span>
                         <span class="project-badge">${item.project}</span>
                     </div>
-                    <div class="log-title">${item.title}</div>
+                    
                     <div class="log-comment">${item.comment}</div>
+                    
+                    ${item.imageUrl ? `
+                        <div style="margin-top: 14px; max-width: 500px;">
+                            <img src="${item.imageUrl}" style="width: 100%; border-radius: 4px; display: block;" alt="Uploaded Resource Block">
+                        </div>
+                    ` : ''}
                 </div>
             `).join('');
         }
@@ -89,8 +99,7 @@
         document.getElementById('searchBar').addEventListener('input', renderTimeline);
         document.getElementById('projectFilter').addEventListener('change', renderTimeline);
 
-        // Initial paint execution
-        renderTimeline();
+        loadDatabase();
     </script>
 </body>
 </html>

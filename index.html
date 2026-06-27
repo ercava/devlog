@@ -26,8 +26,6 @@
 
         <main class="timeline" id="timelineContainer">
             </main>
-
-
     </div>
 
     <script>
@@ -46,11 +44,8 @@
             }
         }
 
-        // Extract and construct unique dynamic categories directly from data layer
         function populateProjectFilter() {
             const filterSelect = document.getElementById('projectFilter');
-            
-            // Extract distinct project string occurrences safely
             const projects = [...new Set(logData.map(item => item.project).filter(Boolean))];
             
             let optionsHTML = `<option value="all">all projects</option>`;

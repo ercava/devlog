@@ -1,9 +1,26 @@
 /* ==========================================
-   Timeline Component Extensions
+   Global Base Styles
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #050505; /* Deep dark background */
+    color: #ffffff;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================
+   Timeline System
    ========================================== */
 
-/* Force lowercase exclusively on specific operational headings/UI labels */
-h1, .subtitle, .form-group label, .btn-submit, .panel-header h3, .panel-tab,
+/* Force lowercase on UI controls */
+h1, .subtitle, .btn-submit, 
 .timeline-view-wrapper .btn-toggle,
 .timeline-view-wrapper select,
 .timeline-view-wrapper .search-box::placeholder,
@@ -11,17 +28,15 @@ h1, .subtitle, .form-group label, .btn-submit, .panel-header h3, .panel-tab,
     text-transform: lowercase;
 }
 
-/* Center timeline wrapper element context */
 .timeline-view-wrapper {
     width: 100%;
     max-width: 600px;
     margin: 60px auto 20px auto;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-/* Controls alignment bar matching your image layout reference */
+/* Controls Bar */
 .timeline-view-wrapper .controls-bar {
     display: flex;
     flex-wrap: wrap;
@@ -70,18 +85,18 @@ h1, .subtitle, .form-group label, .btn-submit, .panel-header h3, .panel-tab,
     transition: all 0.2s ease;
 }
 
-/* Darker Blue Theme Palette Actions */
 .timeline-view-wrapper .btn-toggle.active {
     background: #1d4ed8;
     color: #fff;
     border-color: #2563eb;
 }
 
-/* Fixed centered vertical tracking line axis track */
+/* Left-Aligned Timeline Track */
 .timeline {
     width: 100%;
     position: relative;
-    padding: 10px 0;
+    padding-left: 40px;
+    padding-top: 10px;
 }
 
 .timeline::before {
@@ -89,44 +104,41 @@ h1, .subtitle, .form-group label, .btn-submit, .panel-header h3, .panel-tab,
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 50%;
+    left: 10px; /* Aligns line to the far left */
     width: 2px;
-    background: #1e293b; /* Clean crisp line divider */
-    transform: translateX(-50%);
+    background: #1e293b;
 }
 
-/* Timeline text block spacing and centering metrics */
 .timeline-item {
     position: relative;
     width: 100%;
     padding-bottom: 40px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
     z-index: 1;
 }
 
-/* Node point centered cleanly over vertical tracking axis line */
+/* Node indicator dot */
 .timeline-item::before {
     content: '';
     position: absolute;
     top: 6px;
-    left: 50%;
+    left: -34px; /* Centers dot on the line */
     width: 10px;
     height: 10px;
-    background: #2563eb; /* Darker blue scheme node */
+    background: #2563eb;
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
-    transform: translateX(-50%);
 }
 
-/* Subtle node element tracking divider cap */
 .timeline-item::after {
     content: '';
     position: absolute;
     bottom: 15px;
-    width: 24px;
+    left: 0;
+    width: 40px;
     height: 1px;
     background: #1e293b;
 }
@@ -134,7 +146,7 @@ h1, .subtitle, .form-group label, .btn-submit, .panel-header h3, .panel-tab,
 .timeline-view-wrapper .meta-line {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 10px;
     font-size: 0.85rem;
     color: #64748b;
@@ -152,18 +164,18 @@ h1, .subtitle, .form-group label, .btn-submit, .panel-header h3, .panel-tab,
     border: 1px solid #1e293b;
 }
 
-/* Normal case comment layout mapping */
 .timeline-view-wrapper .log-comment {
     color: #cbd5e1;
     font-size: 0.95rem;
     line-height: 1.6;
-    max-width: 85%;
-    text-transform: none; /* Leaves user-submitted log strings unaltered */
+    max-width: 100%;
+    text-transform: none;
 }
 
 .timeline-view-wrapper .nav-links {
     margin-top: 20px;
     text-align: center;
+    width: 100%;
 }
 
 .timeline-view-wrapper .nav-links a {

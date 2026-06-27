@@ -1,0 +1,39 @@
+name: Save Quick Upload Rant
+
+on:
+  repository_dispatch:
+    types: [new-rant-submission]
+
+jobs:
+  update-logs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: Append Form Data to logs.json
+        run: |
+          PROJECT="${{ github.event.client_payload.project }}"
+          COMMENT="${{ github.event.client_payload.comment }}"
+          IMAGE_URL="${{ github.event.client_payload.imageUrl }}"
+          DATE=$(date +'%Y-%m-%d')
+          ID=$(date +%s)
+
+          # Construct a clean JSON entry object missing title property keys entirely
+          NEW_ENTRY=$(jq -n \
+            --arg id "$ID" \
+            --arg date "$DATE" \
+            --arg project "$PROJECT" \
+            --arg comment "$COMMENT" \
+            --arg imageUrl "$IMAGE_URL" \
+            '{id: ($id|tonumber), date: $date, project: $project, comment: $comment, imageUrl: $imageUrl}')
+
+          jq ". += [$NEW_ENTRY]" logs.json > tmp.json && mv tmp.json logs.json
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "Ercava Bot"
+          git config --global user.email "bot@ercava.dev"
+          git add logs.json
+          git commit -m "system: automated quickuploadrant log entry append [skip ci]"
+          git push

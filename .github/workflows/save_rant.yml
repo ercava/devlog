@@ -38,12 +38,10 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "botrunner"
-          git config --global user.email "bot@ercava.github.io"
+          git config --global user.name "Ercava Bot"
+          git config --global user.email "bot@ercava.dev"
           git add logs.json
-          
-          # Copilot's excellent safety guard: doesn't crash if logs didn't change
           git commit -m "system: automated quickuploadrant log entry append [skip ci]" || echo "No changes to commit"
           
-          # Explicit push URL using your token to completely steamroll the 403 restriction
+          # THIS IS THE CRITICAL LINE THAT OVERRIDES THE 403 ERROR:
           git push https://x-access-token:${{ secrets.MY_DEVLOG_SECRET }}@github.com/ercava/devlog.git main

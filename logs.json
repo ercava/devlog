@@ -12,5 +12,12 @@
     "project": "devlog",
     "comment": "i swear i cant get this action to be running",
     "imageUrl": "https://i.ibb.co/DPptQsQg/image.png"
+  },
+  {
+    "id": 1782647129,
+    "date": "2026-06-28",
+    "project": "cerpen",
+    "comment": "beginning to parse author and title  strings",
+    "imageUrl": "https://i.ibb.co/WN315sW6/image.png"
   }
 ]

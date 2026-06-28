@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Checkout Repository Code
         uses: actions/checkout@v4
+
       - name: Append Form Data to logs.json
         run: |
           PROJECT="${{ github.event.client_payload.project }}"
@@ -27,12 +28,30 @@ jobs:
             --arg comment "$COMMENT" \
             --arg imageUrl "$IMAGE_URL" \
             '{id: ($id|tonumber), date: $date, project: $project, comment: $comment, imageUrl: $imageUrl}')
+          echo "$NEW_ENTRY" > new_entry.json
           jq ". += [$NEW_ENTRY]" logs.json > tmp.json && mv tmp.json logs.json
+
       - name: Commit and Push Changes
         run: |
           git config --global user.name "Ercava Bot"
           git config --global user.email "bot@ercava.dev"
-          git add logs.json
-          git commit -m "system: automated quickuploadrant log entry append [skip ci]"
-          git pull --rebase origin main
-          git push
+
+          NEW_ENTRY=$(cat new_entry.json)
+
+          for i in 1 2 3 4 5 6 7 8; do
+            git add logs.json
+            git commit -m "system: automated quickuploadrant log entry append [skip ci]" || true
+
+            if git push origin main; then
+              echo "Push succeeded."
+              break
+            fi
+
+            echo "Push rejected (attempt $i), re-syncing..."
+            sleep $(( (RANDOM % 5) + 1 ))
+
+            git fetch origin main
+            git reset --hard origin/main
+
+            jq ". += [$NEW_ENTRY]" logs.json > tmp.json && mv tmp.json logs.json
+          done

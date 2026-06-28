@@ -160,11 +160,11 @@
         <form id="rantForm" onsubmit="handleFormSubmit(event)">
             <div class="form-group">
                 <label for="projectName">project name</label>
-                <input type="text" id="projectName" placeholder="e.g., project darkbox" required>
+                <input type="text" id="projectName" placeholder="e.g., project" required>
             </div>
 
             <div class="form-group">
-                <label>file image attachment (or ctrl+v anywhere to paste)</label>
+                <label>file attachment (or ctrl+v anywhere to paste)</label>
                 <div class="dropzone-box" id="dropzone" onclick="document.getElementById('fileInput').click()">
                     <span id="dropzoneText">click to select or press ctrl+v to paste image</span>
                     <input type="file" id="fileInput" style="display: none;" accept="image/*" onchange="handleFileSelect(event)">
@@ -175,8 +175,8 @@
             </div>
 
             <div class="form-group">
-                <label for="commentBox">comment / rant details</label>
-                <textarea id="commentBox" rows="5" placeholder="type engineering logs or constraints here..." required></textarea>
+                <label for="commentBox">comment</label>
+                <textarea id="commentBox" rows="5" placeholder="yeah" required></textarea>
             </div>
 
             <button type="submit" class="btn-submit">submit entry</button>
@@ -184,7 +184,7 @@
     </main>
 
     <div class="nav-links">
-        <a href="../index.html">← back to timeline index</a>
+        <a href="../index.html">← back ←</a>
     </div>
 
     <script>
@@ -317,93 +317,4 @@
         }
     </script>
 </body>
-</html>name: Save Quick Upload Rant
-
-on:
-  repository_dispatch:
-    types: [new-rant-submission]
-
-permissions:
-  contents: write
-
-concurrency:
-  group: save-rant-${{ github.event.client_payload.project || 'default' }}
-  cancel-in-progress: false
-
-jobs:
-  update-logs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
-      - name: Build and push logs.json safely
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          PROJECT="${{ github.event.client_payload.project }}"
-          COMMENT="${{ github.event.client_payload.comment }}"
-          IMAGE_URL="${{ github.event.client_payload.imageUrl }}"
-          DATE=$(date +'%Y-%m-%d')
-          ID=$(date +%s)
-
-          # Build entry as jq JSON (id as number)
-          NEW_ENTRY=$(jq -n \
-            --arg id "$ID" \
-            --arg date "$DATE" \
-            --arg project "$PROJECT" \
-            --arg comment "$COMMENT" \
-            --arg imageUrl "$IMAGE_URL" \
-            '{id: ($id|tonumber), date: $date, project: $project, comment: $comment, imageUrl: $imageUrl}')
-
-          # Determine branch checked out
-          BRANCH=$(git rev-parse --abbrev-ref HEAD)
-
-          # Ensure we have the latest remote branch (use token for auth)
-          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}"
-          git fetch origin "$BRANCH"
-
-          # Read remote logs.json if it exists, otherwise start with empty array
-          REMOTE_LOGS_FILE=$(mktemp)
-          if git show origin/"$BRANCH":logs.json > "$REMOTE_LOGS_FILE" 2>/dev/null; then
-            echo "Fetched remote logs.json"
-          else
-            echo "[]" > "$REMOTE_LOGS_FILE"
-          fi
-
-          # Merge remote logs + new entry ensuring uniqueness by id and stable order
-          jq --argjson entry "$NEW_ENTRY" '(. + [$entry]) | unique_by(.id) | sort_by(.id)' "$REMOTE_LOGS_FILE" > logs.json
-
-          # Commit only if changes present
-          git add logs.json
-          if git diff --staged --quiet; then
-            echo "No changes to commit. Exiting."
-            exit 0
-          fi
-
-          git config user.name "Ercava Bot"
-          git config user.email "bot@ercava.dev"
-
-          # Commit with conventional message
-          git commit -m "system: automated quickuploadrant log entry append [skip ci]"
-
-          # Rebase on remote to avoid fast-forward rejections; fallback to merge if rebase fails
-          git fetch origin "$BRANCH"
-          git rebase origin/"$BRANCH" || {
-            echo "Rebase failed, aborting and attempting a merge instead"
-            git rebase --abort || true
-            git pull --no-rebase --no-edit origin "$BRANCH"
-          }
-
-          # Push
-          git push origin HEAD:"$BRANCH"
+</html>

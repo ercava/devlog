@@ -7,25 +7,38 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: save-rant-${{ github.event.client_payload.project || 'default' }}
+  cancel-in-progress: false
+
 jobs:
   update-logs:
     runs-on: ubuntu-latest
     steps:
-# Checkout step (replace existing)
-      - name: Checkout Repository Code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+          persist-credentials: true
 
-      - name: Append Form Data to logs.json
+      - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Build and push logs.json safely
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
           PROJECT="${{ github.event.client_payload.project }}"
           COMMENT="${{ github.event.client_payload.comment }}"
           IMAGE_URL="${{ github.event.client_payload.imageUrl }}"
           DATE=$(date +'%Y-%m-%d')
           ID=$(date +%s)
 
+          # Build entry as jq JSON (id as number)
           NEW_ENTRY=$(jq -n \
             --arg id "$ID" \
             --arg date "$DATE" \
@@ -34,25 +47,44 @@ jobs:
             --arg imageUrl "$IMAGE_URL" \
             '{id: ($id|tonumber), date: $date, project: $project, comment: $comment, imageUrl: $imageUrl}')
 
-          jq ". += [$NEW_ENTRY]" logs.json > tmp.json && mv tmp.json logs.json
+          # Determine branch checked out
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# Replace the Commit and Push Changes step with the following
-      - name: Commit and Push Changes
-        env:
-          BRANCH: main
-        run: |
-          git config --global user.name "ercrunner"
-          git config --global user.email "bot@ercava.github.io"
-      
+          # Ensure we have the latest remote branch (use token for auth)
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}"
+          git fetch origin "$BRANCH"
+
+          # Read remote logs.json if it exists, otherwise start with empty array
+          REMOTE_LOGS_FILE=$(mktemp)
+          if git show origin/"$BRANCH":logs.json > "$REMOTE_LOGS_FILE" 2>/dev/null; then
+            echo "Fetched remote logs.json"
+          else
+            echo "[]" > "$REMOTE_LOGS_FILE"
+          fi
+
+          # Merge remote logs + new entry ensuring uniqueness by id and stable order
+          jq --argjson entry "$NEW_ENTRY" '(. + [$entry]) | unique_by(.id) | sort_by(.id)' "$REMOTE_LOGS_FILE" > logs.json
+
+          # Commit only if changes present
           git add logs.json
-      
-          # If no staged changes, exit successfully
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
+          if git diff --staged --quiet; then
+            echo "No changes to commit. Exiting."
             exit 0
           fi
-      
+
+          git config user.name "Ercava Bot"
+          git config user.email "bot@ercava.dev"
+
+          # Commit with conventional message
           git commit -m "system: automated quickuploadrant log entry append [skip ci]"
-      
-          # Make sure we have latest remote branch and rebase to avoid non-fast-forward
+
+          # Rebase on remote to avoid fast-forward rejections; fallback to merge if rebase fails
           git fetch origin "$BRANCH"
+          git rebase origin/"$BRANCH" || {
+            echo "Rebase failed, aborting and attempting a merge instead"
+            git rebase --abort || true
+            git pull --no-rebase --no-edit origin "$BRANCH"
+          }
+
+          # Push
+          git push origin HEAD:"$BRANCH"

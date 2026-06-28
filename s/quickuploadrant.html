@@ -6,8 +6,10 @@
     <title>quip</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles.css">
-   <style>
-    /* Centering and spacing wrapper */
+<style>
+    /* ==========================================
+       Form Scope Architecture (Matches Index)
+       ========================================== */
     body {
         display: flex;
         flex-direction: column;
@@ -15,7 +17,7 @@
         justify-content: center;
         min-height: 100vh;
         padding: 40px 20px;
-        background: #050505;
+        background: #050505; /* Balanced base canvas */
     }
 
     .form-wrapper {
@@ -23,8 +25,8 @@
         max-width: 500px;
         background: #0a0a0a;
         padding: 40px;
-        border: 1px solid #1e293b;
-        border-radius: 12px;
+        border: 1px solid #1e293b; /* Index track matching gray */
+        border-radius: 6px;
     }
 
     .form-group {
@@ -36,97 +38,121 @@
         width: 100%;
     }
 
+    /* Enforce explicit programmatic lowercase alignment */
+    .form-group label,
+    .btn-submit {
+        text-transform: lowercase;
+    }
+
     .form-group label {
         font-size: 0.75rem;
         font-weight: 700;
         color: #475569;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.05em;
     }
 
     .form-group input[type="text"], 
     .form-group textarea {
         width: 100%;
-        padding: 16px;
-        background: #0f172a;
+        padding: 14px 16px;
+        background: #0f172a; /* Controls match search box scheme */
         border: 1px solid #1e293b;
-        border-radius: 8px;
-        color: #f8fafc;
+        border-radius: 6px;
+        color: #fff;
         font-family: inherit;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         transition: all 0.2s ease;
     }
 
     .form-group input[type="text"]:focus, 
     .form-group textarea:focus {
         outline: none;
-        border-color: #2563eb;
-        background: #1e293b;
+        border-color: #2563eb; /* Crisp blue active index border */
     }
 
+    /* ==========================================
+       Asset Pipeline Stream UI
+       ========================================== */
     .dropzone-box {
-        border: 2px dashed #1e293b;
+        border: 1px dashed #1e293b;
         background: #0f172a;
-        border-radius: 8px;
+        border-radius: 6px;
         padding: 30px;
         text-align: center;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
 
     .dropzone-box:hover, .dropzone-box.dragover {
         border-color: #2563eb;
-        background: #1e293b;
+        color: #fff;
     }
 
     .dropzone-box span {
         font-size: 0.85rem;
-        color: #64748b;
+        color: #94a3b8; /* Matches unselected UI controls color */
     }
 
     #previewContainer {
         margin-top: 16px;
         display: none;
         width: 100%;
-        border-radius: 8px;
+        border-radius: 4px;
         overflow: hidden;
         border: 1px solid #1e293b;
     }
 
+    #previewImg {
+        width: 100%;
+        display: block;
+        height: auto;
+    }
+
+    /* ==========================================
+       Interactive Controls
+       ========================================== */
     .btn-submit {
         width: 100%;
-        background: #2563eb;
-        color: #ffffff;
-        border: none;
-        padding: 16px;
+        background: #1d4ed8; /* Matches active sorting selection state */
+        color: #fff;
+        border: 1px solid #2563eb;
+        padding: 14px;
         font-family: inherit;
         font-weight: 600;
-        border-radius: 8px;
+        border-radius: 6px;
         cursor: pointer;
-        font-size: 0.9rem;
-        transition: all 0.2s;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
     }
 
     .btn-submit:hover:not(:disabled) {
-        background: #1d4ed8;
+        background: #2563eb;
+    }
+
+    .btn-submit:disabled {
+        background: #0f172a;
+        border-color: #1e293b;
+        color: #475569;
+        cursor: not-allowed;
     }
 
     .nav-links {
         margin-top: 30px;
         font-size: 0.85rem;
+        text-align: center;
+        width: 100%;
     }
 
     .nav-links a {
-        color: #475569;
+        color: #3b82f6; /* Link dynamic anchor color */
         text-decoration: none;
-        transition: color 0.2s;
+        transition: opacity 0.2s;
     }
 
     .nav-links a:hover {
-        color: #2563eb;
+        opacity: 0.8;
     }
-</style>
-</head>
+</style></head>
 <body>
 
 
@@ -163,7 +189,7 @@
 
     <script>
         const IMGBB_API_KEY = "46762a5e6eda82914445ffc478d66ca5";
-        const GITHUB_PAT = "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";
+        const GITHUB_PAT = localStorage.getItem('MY_DEVLOG_SECRET') || "";
         const REPO_OWNER = "ercava";
         const REPO_NAME = "devlog";
 

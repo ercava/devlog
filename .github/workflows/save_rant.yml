@@ -13,10 +13,6 @@ jobs:
     steps:
       - name: Checkout Repository Code
         uses: actions/checkout@v4
-        with:
-          # Use your custom high-privilege token so git has genuine push rights
-          token: ${{ secrets.MY_DEVLOG_SECRET }}
-          persist-credentials: true
 
       - name: Append Form Data to logs.json
         run: |
@@ -41,7 +37,5 @@ jobs:
           git config --global user.name "Ercava Bot"
           git config --global user.email "bot@ercava.dev"
           git add logs.json
-          git commit -m "system: automated quickuploadrant log entry append [skip ci]" || echo "No changes to commit"
-          
-          # THIS IS THE CRITICAL LINE THAT OVERRIDES THE 403 ERROR:
-          git push https://x-access-token:${{ secrets.MY_DEVLOG_SECRET }}@github.com/ercava/devlog.git main
+          git commit -m "system: automated quickuploadrant log entry append [skip ci]"
+          git push

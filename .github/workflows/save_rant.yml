@@ -1,44 +1,25 @@
 name: Save Quick Upload Rant
-
 on:
   repository_dispatch:
     types: [new-rant-submission]
 
-permissions:
-  contents: write
-
 concurrency:
-  group: save-rant-${{ github.event.client_payload.project || 'default' }}
+  group: logs-json-update
   cancel-in-progress: false
 
 jobs:
   update-logs:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-
-      - name: Install dependencies
+      - name: Append Form Data to logs.json
         run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
-      - name: Build and push logs.json safely
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-
           PROJECT="${{ github.event.client_payload.project }}"
           COMMENT="${{ github.event.client_payload.comment }}"
           IMAGE_URL="${{ github.event.client_payload.imageUrl }}"
           DATE=$(date +'%Y-%m-%d')
           ID=$(date +%s)
-
-          # Build entry as jq JSON (id as number)
           NEW_ENTRY=$(jq -n \
             --arg id "$ID" \
             --arg date "$DATE" \
@@ -46,49 +27,12 @@ jobs:
             --arg comment "$COMMENT" \
             --arg imageUrl "$IMAGE_URL" \
             '{id: ($id|tonumber), date: $date, project: $project, comment: $comment, imageUrl: $imageUrl}')
-
-          # Determine branch checked out
-          BRANCH=$(git rev-parse --abbrev-ref HEAD)
-
-          # Ensure we have the latest remote branch (use token for auth)
-          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}"
-          git fetch origin "$BRANCH"
-
-          # Read remote logs.json if it exists, otherwise start with empty array
-          REMOTE_LOGS_FILE=$(mktemp)
-          if git show origin/"$BRANCH":logs.json > "$REMOTE_LOGS_FILE" 2>/dev/null; then
-            echo "Fetched remote logs.json"
-          else
-            echo "[]" > "$REMOTE_LOGS_FILE"
-          fi
-
-          # Merge remote logs + new entry ensuring uniqueness by id and stable order
-          jq --argjson entry "$NEW_ENTRY" '(. + [$entry]) | unique_by(.id) | sort_by(.id)' "$REMOTE_LOGS_FILE" > logs.json
-
-          # Commit only if changes present
+          jq ". += [$NEW_ENTRY]" logs.json > tmp.json && mv tmp.json logs.json
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "Ercava Bot"
+          git config --global user.email "bot@ercava.dev"
           git add logs.json
-          if git diff --staged --quiet; then
-            echo "No changes to commit. Exiting."
-            exit 0
-          fi
-
-          git config user.name "Ercava Bot"
-          git config user.email "bot@ercava.dev"
-
-          # Commit with conventional message
           git commit -m "system: automated quickuploadrant log entry append [skip ci]"
-
-          # Fetch again to get latest before rebase
-          git fetch origin "$BRANCH"
-          
-          # Attempt rebase; fallback to merge if it fails
-          if git rebase origin/"$BRANCH"; then
-            echo "Rebase successful"
-          else
-            echo "Rebase failed, aborting and merging instead"
-            git rebase --abort || true
-            git merge --no-edit origin/"$BRANCH"
-          fi
-
-          # Push
-          git push origin HEAD:"$BRANCH"
+          git pull --rebase origin main
+          git push

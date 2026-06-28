@@ -11,8 +11,12 @@ jobs:
   update-logs:
     runs-on: ubuntu-latest
     steps:
+# Checkout step (replace existing)
       - name: Checkout Repository Code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Append Form Data to logs.json
         run: |
@@ -32,10 +36,23 @@ jobs:
 
           jq ". += [$NEW_ENTRY]" logs.json > tmp.json && mv tmp.json logs.json
 
+# Replace the Commit and Push Changes step with the following
       - name: Commit and Push Changes
+        env:
+          BRANCH: main
         run: |
-          git config --global user.name "Ercava Bot"
-          git config --global user.email "bot@ercava.dev"
+          git config --global user.name "ercrunner"
+          git config --global user.email "bot@ercava.github.io"
+      
           git add logs.json
+      
+          # If no staged changes, exit successfully
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+      
           git commit -m "system: automated quickuploadrant log entry append [skip ci]"
-          git push
+      
+          # Make sure we have latest remote branch and rebase to avoid non-fast-forward
+          git fetch origin "$BRANCH"

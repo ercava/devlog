@@ -78,13 +78,17 @@ jobs:
           # Commit with conventional message
           git commit -m "system: automated quickuploadrant log entry append [skip ci]"
 
-          # Rebase on remote to avoid fast-forward rejections; fallback to merge if rebase fails
+          # Fetch again to get latest before rebase
           git fetch origin "$BRANCH"
-          git rebase origin/"$BRANCH" || {
-            echo "Rebase failed, aborting and attempting a merge instead"
+          
+          # Attempt rebase; fallback to merge if it fails
+          if git rebase origin/"$BRANCH"; then
+            echo "Rebase successful"
+          else
+            echo "Rebase failed, aborting and merging instead"
             git rebase --abort || true
-            git pull --no-rebase --no-edit origin "$BRANCH"
-          }
+            git merge --no-edit origin/"$BRANCH"
+          fi
 
           # Push
           git push origin HEAD:"$BRANCH"
